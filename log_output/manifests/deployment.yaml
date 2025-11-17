@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: randomstrings-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: randomstrings-dep
+  template:
+    metadata:
+      labels:
+        app: randomstrings-dep
+    spec:
+      containers:
+        - name: kubernetes-app1
+          image: borisbanchev03/kubernetes-app1:v1.0.1
