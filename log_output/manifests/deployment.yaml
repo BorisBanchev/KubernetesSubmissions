@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: kubernetes-app1
-          image: borisbanchev03/kubernetes-app1:v1.0.1
+          image: borisbanchev03/kubernetes-app1:v1.0.2
