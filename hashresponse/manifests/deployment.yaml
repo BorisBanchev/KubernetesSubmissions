@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashresponse-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashresponse-dep
+  template:
+    metadata:
+      labels:
+        app: hashresponse-dep
+    spec:
+      containers:
+        - name: hashresponse-dep
+          image: borisbanchev03/kubernetes-app2:v1.0.0
