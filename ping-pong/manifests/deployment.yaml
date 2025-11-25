@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong-dep
+  template:
+    metadata:
+      labels:
+        app: pingpong-dep
+    spec:
+      containers:
+        - name: kubernetes-app3
+          image: borisbanchev03/kubernetes-app3:v1.0.0
