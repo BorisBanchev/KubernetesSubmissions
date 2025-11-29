@@ -12,6 +12,19 @@ spec:
       labels:
         app: randomstrings-dep
     spec:
+      volumes:
+        - name: shared-data
+          emptyDir: {}
       containers:
-        - name: kubernetes-app1
-          image: borisbanchev03/kubernetes-app1:v1.0.2
+        - name: log-generator
+          image: borisbanchev03/kubernetes-app1:v1.0.4
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data
+        - name: log-reader
+          image: borisbanchev03/logoutput-reader:reader.v2
+          ports:
+            - containerPort: 3003
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data

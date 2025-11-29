@@ -7,6 +7,11 @@ spec:
   selector:
     app: randomstrings-dep
   ports:
-    - port: 2345
+    - name: generator
+      port: 2345
       protocol: TCP
       targetPort: 3000
+    - name: reader
+      port: 3003
+      protocol: TCP
+      targetPort: 3003
