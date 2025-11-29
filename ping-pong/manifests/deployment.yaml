@@ -12,6 +12,13 @@ spec:
       labels:
         app: pingpong-dep
     spec:
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: randomstring-pinpong-claim
       containers:
         - name: kubernetes-app3
-          image: borisbanchev03/kubernetes-app3:v1.0.0
+          image: borisbanchev03/kubernetes-app3:v1.0.1
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data

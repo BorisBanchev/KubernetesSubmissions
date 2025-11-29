@@ -6,6 +6,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 const FILE_PATH = "/usr/src/app/data/strings.txt";
+const PING_FILE = "/usr/src/app/data/pingpong-counts.txt";
 
 const writeContentToFile = (file, content) => {
   fs.writeFile(file, content, { flag: "a+" }, (err) => {
@@ -59,6 +60,16 @@ ensureFileExists(FILE_PATH, (err) => {
   }
 });
 
+const getPingPongCount = async () => {
+  try {
+    const data = await fs.promises.readFile(PING_FILE, "utf8");
+    return data && data.trim() ? parseInt(data.trim(), 10) || 0 : 0;
+  } catch (err) {
+    if (err.code === "ENOENT") return 0;
+    throw err;
+  }
+};
+
 const generateStringAndTimestamp = () => {
   let result = " ";
   const charactersLength = characters.length;
@@ -70,8 +81,14 @@ const generateStringAndTimestamp = () => {
   return timestampAndString;
 };
 
-app.get("/", (request, response) => {
-  response.send(generateStringAndTimestamp());
+app.get("/", async (request, response) => {
+  try {
+    const pingCount = await getPingPongCount();
+    const timestampAndString = generateStringAndTimestamp();
+    response.send(`${timestampAndString}\nPing / Pongs:${pingCount}`);
+  } catch (err) {
+    res.status(500).send("Error reading ping count");
+  }
 });
 
 app.listen(port, () => {

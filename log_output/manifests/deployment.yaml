@@ -14,10 +14,11 @@ spec:
     spec:
       volumes:
         - name: shared-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: randomstring-pinpong-claim
       containers:
         - name: log-generator
-          image: borisbanchev03/kubernetes-app1:v1.0.4
+          image: borisbanchev03/kubernetes-app1:v1.0.6
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
@@ -25,6 +26,13 @@ spec:
           image: borisbanchev03/logoutput-reader:reader.v2
           ports:
             - containerPort: 3003
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data
+        - name: ping-pinpong
+          image: borisbanchev03/kubernetes-app3:v1.0.1
+          ports:
+            - containerPort: 3001
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
