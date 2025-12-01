@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <style>
+      img {
+        max-width: 600px;
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1>The project App</h1>
+      <img id="randomImage" src="/cached-image.jpg" alt="random picture" />
+      <!-- <div>
+        <input type="text" id="todo" name="todo" required maxlength="140" />
+        <button type="submit" id="create-todo">Create todo</button>
+      </div>
+      <div id="todos">
+        <ul>
+          <li>Learn Javascript</li>
+          <li>Learn React</li>
+          <li>Build a project</li>
+        </ul>
+      </div> -->
+      <p>DevOps with Kubernetes 2025</p>
+    </div>
+    <script>
+      const img = document.getElementById("randomImage");
+      function refreshImage() {
+        img.src = "/cached-image.jpg?ts=" + Date.now();
+      }
+      refreshImage();
+      setInterval(refreshImage, 10 * 60 * 1000);
+    </script>
+  </body>
+</html>

@@ -1,17 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-app
+  name: todoapp-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: todo-app
+      app: todoapp-dep
   template:
     metadata:
       labels:
-        app: todo-app
+        app: todoapp-dep
     spec:
+      volumes:
+        - name: images-data
+          persistentVolumeClaim:
+            claimName: todoapp-claim
       containers:
-        - name: todo-app-initial
-          image: borisbanchev03/todo-app-initial:v1.0.2
+        - name: todoapp-dep
+          image: borisbanchev03/todo-app-initial:v1.0.3
+          volumeMounts:
+            - name: images-data
+              mountPath: /usr/src/app/data
