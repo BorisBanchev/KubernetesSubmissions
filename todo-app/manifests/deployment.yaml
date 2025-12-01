@@ -18,7 +18,7 @@ spec:
             claimName: todoapp-claim
       containers:
         - name: todoapp-dep
-          image: borisbanchev03/todo-app-initial:v1.0.3
+          image: borisbanchev03/todo-app-initial:v1.0.4
           volumeMounts:
             - name: images-data
               mountPath: /usr/src/app/data
