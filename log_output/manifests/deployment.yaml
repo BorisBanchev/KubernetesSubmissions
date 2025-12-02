@@ -18,21 +18,16 @@ spec:
             claimName: randomstring-pinpong-claim
       containers:
         - name: log-generator
-          image: borisbanchev03/kubernetes-app1:v1.0.6
-          volumeMounts:
-            - name: shared-data
-              mountPath: /usr/src/app/data
+          image: borisbanchev03/kubernetes-app1:v1.0.8
+
         - name: log-reader
-          image: borisbanchev03/logoutput-reader:reader.v2
+          image: borisbanchev03/logoutput-reader:reader.v3
           ports:
             - containerPort: 3003
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
         - name: ping-pinpong
-          image: borisbanchev03/kubernetes-app3:v1.0.1
+          image: borisbanchev03/kubernetes-app3:v1.0.2
           ports:
             - containerPort: 3001
-          volumeMounts:
-            - name: shared-data
-              mountPath: /usr/src/app/data
