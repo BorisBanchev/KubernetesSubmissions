@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: shared-apps-ingress
+  name: exercises-shared-ingress
+  namespace: exercises
 
 spec:
   rules:
@@ -20,18 +21,11 @@ spec:
               service:
                 name: randomstrings-svc
                 port:
-                  number: 3003
+                  name: reader
           - path: /randomstrings
             pathType: Prefix
             backend:
               service:
                 name: randomstrings-svc
                 port:
-                  number: 2345
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: todoapp-svc
-                port:
-                  number: 2345
+                  name: generator
