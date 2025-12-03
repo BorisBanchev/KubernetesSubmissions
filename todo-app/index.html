@@ -19,15 +19,13 @@
       <h1>The project App</h1>
       <img id="randomImage" src="/cached-image.jpg" alt="random picture" />
       <div>
-        <input type="text" id="todo" name="todo" required maxlength="140" />
-        <button type="submit" id="create-todo">Create todo</button>
+        <form id="todoForm" action="/api/todos" method="post">
+          <input type="text" id="todo" name="todo" required maxlength="140" />
+          <button type="submit" id="create-todo">Create todo</button>
+        </form>
       </div>
       <div id="todos">
-        <ul>
-          <li>Learn Javascript</li>
-          <li>Learn React</li>
-          <li>Build a project</li>
-        </ul>
+        <ul id="todoList"></ul>
       </div>
       <p>DevOps with Kubernetes 2025</p>
     </div>
@@ -38,6 +36,67 @@
       }
       refreshImage();
       setInterval(refreshImage, 10 * 60 * 1000);
+
+      const todoListEl = document.getElementById("todoList");
+      const form = document.getElementById("todoForm");
+      const input = document.getElementById("todo");
+
+      async function loadTodos() {
+        todoListEl.innerHTML = "";
+        try {
+          const resp = await fetch("/api/todos");
+          if (!resp.ok) throw new Error("Failed to fetch todos");
+          let todos = await resp.json();
+          if (typeof todos === "string") {
+            try {
+              todos = JSON.parse(todos);
+            } catch (e) {
+              todos = [];
+            }
+          }
+          (Array.isArray(todos) ? todos : []).forEach((t) => {
+            const li = document.createElement("li");
+            li.textContent =
+              typeof t === "string"
+                ? t
+                : t.name || t.title || JSON.stringify(t);
+            todoListEl.appendChild(li);
+          });
+        } catch (err) {
+          console.error("loadTodos error:", err);
+          const li = document.createElement("li");
+          li.textContent = "Failed to load todos";
+          todoListEl.appendChild(li);
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const value = (input.value || "").trim();
+        if (!value || value.length > 140) return;
+        const optimistic = document.createElement("li");
+        optimistic.textContent = value;
+        todoListEl.appendChild(optimistic);
+        input.value = "";
+        input.focus();
+
+        try {
+          const resp = await fetch("/api/todos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: value }),
+          });
+          if (!resp.ok) {
+            console.error("Failed to persist todo");
+          } else {
+            await loadTodos();
+          }
+        } catch (err) {
+          console.error("POST /api/todos failed:", err);
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", loadTodos);
     </script>
   </body>
 </html>

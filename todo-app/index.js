@@ -6,10 +6,12 @@ const { pipeline } = require("stream/promises");
 require("dotenv").config();
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT;
 const CACHE_DIR = "/usr/src/app/data";
 const IMAGE_PATH = path.join(CACHE_DIR, "image.jpg");
 const TTL_MS = 10 * 60 * 1000; // 10 minutes
+const BACKEND_URL = "http://todo-backend-svc:3003";
 
 // ensuring cache dir exists
 const ensureCacheDir = async () => {
@@ -66,6 +68,40 @@ const ensureImageAvailable = async () => {
 
   await downloadImage("https://picsum.photos/1200", IMAGE_PATH);
 };
+
+app.get("/api/todos", async (req, res) => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/todos`);
+    let todos = response.data;
+    if (typeof todos === "string") {
+      try {
+        todos = JSON.parse(todos);
+      } catch (e) {
+        todos = [];
+      }
+    }
+    return res.json(Array.isArray(todos) ? todos : []);
+  } catch (err) {
+    console.error(
+      "Failed to fetch todos from backend:",
+      err && err.message ? err.message : err
+    );
+    return res.status(502).json({ error: "Failed to fetch todos" });
+  }
+});
+
+app.post("/api/todos", async (req, res) => {
+  try {
+    const resp = await axios.post(`${BACKEND_URL}/todos`, req.body);
+    return res.status(resp.status).json(resp.data);
+  } catch (err) {
+    console.error(
+      "Failed to create todo on backend:",
+      err && err.message ? err.message : err
+    );
+    return res.status(502).json({ error: "Failed to create todo" });
+  }
+});
 
 app.get("/cached-image.jpg", async (req, res) => {
   try {
