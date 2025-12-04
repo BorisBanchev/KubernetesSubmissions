@@ -15,6 +15,9 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: borisbanchev03/todo-app-backend:v1.0.0
+          image: borisbanchev03/todo-app-backend:v1.0.1
           ports:
             - containerPort: 3003
+          envFrom:
+            - configMapRef:
+                name: todo-backend-config

@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 
 const uuid = require("uuid");
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT;
 const app = express();
 app.use(express.json());
 const todos = [];

@@ -8,10 +8,11 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 const port = process.env.PORT;
-const CACHE_DIR = "/usr/src/app/data";
+const CACHE_DIR = process.env.CACHE_DIR;
+const IMAGE_SOURCE_URL = process.env.IMAGE_SOURCE_URL;
 const IMAGE_PATH = path.join(CACHE_DIR, "image.jpg");
-const TTL_MS = 10 * 60 * 1000; // 10 minutes
-const BACKEND_URL = "http://todo-backend-svc:3003";
+const TTL_MS = Number(process.env.TTL_MS); // 10 minutes
+const BACKEND_URL = process.env.BACKEND_URL;
 
 // ensuring cache dir exists
 const ensureCacheDir = async () => {
@@ -46,7 +47,7 @@ const ensureImageAvailable = async () => {
   const { exists, age } = await isImageFresh(IMAGE_PATH, TTL_MS);
 
   if (!exists) {
-    await downloadImage("https://picsum.photos/1200", IMAGE_PATH);
+    await downloadImage(IMAGE_SOURCE_URL, IMAGE_PATH);
     return;
   }
 
@@ -57,7 +58,7 @@ const ensureImageAvailable = async () => {
   if (age < 2 * TTL_MS) {
     if (!backgroundRefreshInProgress) {
       backgroundRefreshInProgress = true;
-      downloadImage("https://picsum.photos/1200", IMAGE_PATH)
+      downloadImage(IMAGE_SOURCE_URL, IMAGE_PATH)
         .catch((err) => console.error("Background refresh failed:", err))
         .finally(() => {
           backgroundRefreshInProgress = false;
@@ -66,7 +67,7 @@ const ensureImageAvailable = async () => {
     return;
   }
 
-  await downloadImage("https://picsum.photos/1200", IMAGE_PATH);
+  await downloadImage(IMAGE_SOURCE_URL, IMAGE_PATH);
 };
 
 app.get("/api/todos", async (req, res) => {
