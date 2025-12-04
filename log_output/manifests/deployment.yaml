@@ -17,9 +17,25 @@ spec:
         - name: shared-data
           persistentVolumeClaim:
             claimName: randomstring-pinpong-claim
+        - name: config-volume
+          configMap:
+            name: log-output-config
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
         - name: log-generator
-          image: borisbanchev03/kubernetes-app1:v1.0.8
+          image: borisbanchev03/kubernetes-app1:v1.0.9
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/src/app/configdata
+              readOnly: true
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: MESSAGE
 
         - name: log-reader
           image: borisbanchev03/logoutput-reader:reader.v3

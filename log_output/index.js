@@ -9,6 +9,9 @@ const app = express();
 app.use("/randomstrings", router);
 const port = process.env.PORT;
 const PING_SERVICE_URL = "http://pingpong-svc:2345/pings";
+const CONFIG_DIR = process.env.CONFIG_DIR || "/usr/src/app/configdata";
+const INFO_FILE = path.join(CONFIG_DIR, "information.txt");
+
 // const FILE_PATH = "/usr/src/app/data/strings.txt";
 // const PING_FILE = "/usr/src/app/data/pingpong-counts.txt";
 
@@ -87,10 +90,19 @@ const generateStringAndTimestamp = () => {
 
 router.get("/", async (request, response) => {
   try {
+    let infoContent = "";
+    try {
+      infoContent = await fs.promises.readFile(INFO_FILE, "utf8");
+    } catch (e) {}
+
+    const message = process.env.MESSAGE || "";
+
     const pingCount = await getPingPongCount();
     const timestampAndString = generateStringAndTimestamp();
     response.type("text/plain");
-    response.send(`${timestampAndString}\nPing / Pongs:${pingCount}`);
+    response.send(
+      `${timestampAndString}\nPing / Pongs:${pingCount}\nfile content: ${infoContent}\nenv variable: MESSAGE=${message}`
+    );
   } catch (err) {
     response.status(500).send("Error reading ping count");
   }
