@@ -25,3 +25,4 @@
 - [2.3.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/2.3/manifests)
 - [2.4.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/2.4/manifests)
 - [2.5.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/2.5/log_output)
+- [2.6.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/2.6/todo-app)
