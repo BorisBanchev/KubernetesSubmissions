@@ -15,4 +15,20 @@ spec:
     spec:
       containers:
         - name: kubernetes-app3
-          image: borisbanchev03/kubernetes-app3:v1.0.2
+          image: borisbanchev03/kubernetes-app3:v1.0.11
+          env:
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret-2
+                  key: POSTGRES_USERNAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret-2
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret-2
+                  key: POSTGRES_HOST
