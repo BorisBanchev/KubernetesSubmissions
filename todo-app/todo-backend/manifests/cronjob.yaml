@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-backend-random-wiki
+  namespace: project
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: add-random-wiki
+              image: curlimages/curl:8.1.2
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  loc=$(curl -sI https://en.wikipedia.org/wiki/Special:Random | sed -n 's/^Location: //Ip' | tr -d '\r' | head -n1)
+                  if [ -z "$loc" ]; then
+                    echo "no random location found"; exit 0
+                  fi
+                  case "$loc" in /*) loc="https://en.wikipedia.org${loc}";; esac
+                  todo="Read $loc"
+                  printf '%s' "{\"name\":\"$todo\"}" | curl -s -X POST -H 'Content-Type: application/json' -d @- http://todo-backend-svc:3003/todos || true
