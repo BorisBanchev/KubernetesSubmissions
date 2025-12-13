@@ -25,11 +25,16 @@ spec:
                 path: information.txt
       containers:
         - name: log-generator
-          image: borisbanchev03/kubernetes-app1:v1.0.9
+          image: borisbanchev03/kubernetes-app1:v1.0.14
+          ports:
+            - name: generator
+              containerPort: 3000
           volumeMounts:
             - name: config-volume
               mountPath: /usr/src/app/configdata
               readOnly: true
+            - name: shared-data
+              mountPath: /usr/src/app/data
           env:
             - name: MESSAGE
               valueFrom:
@@ -38,13 +43,10 @@ spec:
                   key: MESSAGE
 
         - name: log-reader
-          image: borisbanchev03/logoutput-reader:reader.v3
+          image: borisbanchev03/logoutput-reader:reader.v7
           ports:
-            - containerPort: 3003
+            - name: reader
+              containerPort: 3003
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
-        - name: ping-pinpong
-          image: borisbanchev03/kubernetes-app3:v1.0.2
-          ports:
-            - containerPort: 3001

@@ -4,12 +4,12 @@ metadata:
   name: randomstrings-svc
   namespace: exercises
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: randomstrings-dep
   ports:
     - name: generator
-      port: 2345
+      port: 80
       protocol: TCP
       targetPort: 3000
     - name: reader

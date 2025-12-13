@@ -3,7 +3,6 @@ kind: PersistentVolume
 metadata:
   name: randomstrings-pingpong-pv
 spec:
-  storageClassName: my-randomstrings-pingpong-pv
   capacity:
     storage: 1Gi
   volumeMode: Filesystem

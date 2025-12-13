@@ -68,6 +68,10 @@ const getDbCount = async () => {
   return Number(res.rows[0].count);
 };
 
+app.get("/", (req, res) => {
+  res.send("you entered ping pong app");
+});
+
 app.get("/pingpong", async (req, res) => {
   if (pool) {
     try {

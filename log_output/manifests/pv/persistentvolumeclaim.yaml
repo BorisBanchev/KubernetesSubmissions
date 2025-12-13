@@ -4,7 +4,6 @@ metadata:
   name: randomstring-pinpong-claim
   namespace: exercises
 spec:
-  storageClassName: my-randomstrings-pingpong-pv
   accessModes:
     - ReadWriteOnce
   resources:

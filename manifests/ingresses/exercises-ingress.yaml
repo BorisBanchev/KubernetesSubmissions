@@ -14,7 +14,7 @@ spec:
               service:
                 name: pingpong-svc
                 port:
-                  number: 2345
+                  number: 80
           - path: /randomstrings/strings
             pathType: Prefix
             backend:
