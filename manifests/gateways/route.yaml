@@ -10,6 +10,17 @@ spec:
     - matches:
         - path:
             type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /pingpong
+            statusCode: 302
+    - matches:
+        - path:
+            type: PathPrefix
             value: /pingpong
       backendRefs:
         - name: pingpong-svc
