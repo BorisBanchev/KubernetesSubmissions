@@ -34,3 +34,4 @@
 - [3.1.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.1/ping-pong)
 - [3.2.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.2/log_output)
 - [3.3.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.3/manifests)
+- [3.4.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.4/manifests)
