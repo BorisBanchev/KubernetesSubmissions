@@ -6,4 +6,3 @@ resources:
 images:
   - name: PROJECT/IMAGE
     newName: borisbanchev03/todo-app-initial
-    newTag: v1.0.8
