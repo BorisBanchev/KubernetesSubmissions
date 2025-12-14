@@ -5,7 +5,7 @@ metadata:
   namespace: project
 data:
   PORT: "3000"
-  TODO_BACKEND_URL: "http://todo-backend-svc:3003"
+  TODO_BACKEND_URL: "http://todo-backend-svc"
   CACHE_DIR: "/usr/src/app/data"
   IMAGE_SOURCE_URL: "https://picsum.photos/1200"
   TTL_MS: "600000"
