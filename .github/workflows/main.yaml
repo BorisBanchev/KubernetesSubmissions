@@ -27,29 +27,43 @@ jobs:
         with:
           credentials_json: "${{ secrets.GKE_SA_KEY }}"
 
-      - name: CI debug — verify auth, project, and repo policy
+      - name: "Set up Cloud SDK"
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: CI debug — verify auth, project, and repo policy (safe capture)
         run: |
+          set -o pipefail
+          echo ">>> Env values"
+          echo "PROJECT_ID=$PROJECT_ID"
+          echo "REPOSITORY=$REPOSITORY"
+          echo "REGISTRY=$REGISTRY"
+
           echo ">>> Secret client_email (from key)"
           echo "${{ secrets.GKE_SA_KEY }}" | jq -r .client_email || true
 
           echo ">>> gcloud active account & project"
-          gcloud auth list --format="value(account)"
+          gcloud auth list --format="value(account)" || true
           gcloud config get-value project || true
 
-          echo ">>> gcloud token check"
+          echo ">>> gcloud token prefix"
           gcloud auth print-access-token | head -c 80 || true
 
-          echo ">>> Repo IAM policy (filter for our SA)"
-          PROJECT_ID=${{ env.PROJECT_ID }}
           SA=$(echo "${{ secrets.GKE_SA_KEY }}" | jq -r .client_email)
-          gcloud artifacts repositories get-iam-policy ${REPOSITORY} --location=europe-north1 --project="$PROJECT_ID" --format=json \
-            | jq --arg m "serviceAccount:$SA" '.bindings[]? | select(.members[]? == $m)' || true
+          echo ">>> Looking for serviceAccount:$SA in repo policy"
 
-          echo ">>> Configure docker for Artifact Registry (explicit host)"
-          gcloud --quiet auth configure-docker europe-north1-docker.pkg.dev
+          # capture stdout/stderr to files so jq never sees an error string
+          gcloud artifacts repositories get-iam-policy "$REPOSITORY" \
+            --location=europe-north1 --project="$PROJECT_ID" --format=json \
+            > /tmp/ar-policy.json 2> /tmp/ar-policy.err || true
 
-      - name: "Set up Cloud SDK"
-        uses: google-github-actions/setup-gcloud@v2
+          echo ">>> get-iam-policy exit code: $?"
+          echo ">>> STDOUT (first 200 lines):"
+          sed -n '1,200p' /tmp/ar-policy.json || true
+          echo ">>> STDERR (first 200 lines):"
+          sed -n '1,200p' /tmp/ar-policy.err || true
+
+          echo ">>> jq filter result (if policy was valid JSON)"
+          jq --arg m "serviceAccount:$SA" '.bindings[]? | select(.members[]? == $m)' /tmp/ar-policy.json || echo "no binding found / jq failed"
 
       - name: "Use gcloud CLI"
         run: gcloud info
