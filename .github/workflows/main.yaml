@@ -27,6 +27,27 @@ jobs:
         with:
           credentials_json: "${{ secrets.GKE_SA_KEY }}"
 
+      - name: CI debug — verify auth, project, and repo policy
+        run: |
+          echo ">>> Secret client_email (from key)"
+          echo "${{ secrets.GKE_SA_KEY }}" | jq -r .client_email || true
+
+          echo ">>> gcloud active account & project"
+          gcloud auth list --format="value(account)"
+          gcloud config get-value project || true
+
+          echo ">>> gcloud token check"
+          gcloud auth print-access-token | head -c 80 || true
+
+          echo ">>> Repo IAM policy (filter for our SA)"
+          PROJECT_ID=${{ env.PROJECT_ID }}
+          SA=$(echo "${{ secrets.GKE_SA_KEY }}" | jq -r .client_email)
+          gcloud artifacts repositories get-iam-policy ${REPOSITORY} --location=europe-north1 --project="$PROJECT_ID" --format=json \
+            | jq --arg m "serviceAccount:$SA" '.bindings[]? | select(.members[]? == $m)' || true
+
+          echo ">>> Configure docker for Artifact Registry (explicit host)"
+          gcloud --quiet auth configure-docker europe-north1-docker.pkg.dev
+
       - name: "Set up Cloud SDK"
         uses: google-github-actions/setup-gcloud@v2
 
