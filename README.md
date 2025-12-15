@@ -36,3 +36,4 @@
 - [3.3.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.3/manifests)
 - [3.4.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.4/manifests)
 - [3.5.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.5/todo-app)
+- [3.6.](https://github.com/BorisBanchev/KubernetesSubmissions/tree/3.6/todo-app)
